@@ -210,10 +210,18 @@ def Reverse(tuples):
 
 if __name__ == "__main__":
     #get the image, sources, and sinks
-    #pre_sources, pre_sinks, filename, dimensions = pickImage()
+    pre_sources, pre_sinks, filename, dimensions = pickImage()
 
     filename = "C:\Users\prana\Documents\image_segmentation\image_segmentation\imeg2.png"
     dimensions = (10,8)
+
+    #print pre_sources
+    pre_sources = [x[::-1] for x in pre_sources]
+    #print pre_sources
+    
+    #print pre_sinks
+    pre_sinks = [x[::-1] for x in pre_sinks]
+    #print pre_sinks
 
     pre_sources = ["5,8"]
     pre_sinks = ["3,2", "4,6"]
