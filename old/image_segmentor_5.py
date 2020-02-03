@@ -1,6 +1,6 @@
 #following: https://julie-jiang.github.io/image-segmentation/
 
-from PIL import Image
+from Pillow import Image
 import numpy as np
 import math
 from collections import deque
@@ -250,9 +250,9 @@ source_pixels = findCut(graph1, residualGraph)
 print [str(x) for x in source_pixels]
 
 #finally, create and save an image that has a blue sink segment (a blue background) and a red source segment (a red foreground)
-segmented = Image.new('RGB', Image.open("C:/Users/prana/Documents/image_segmentation/handwriting/test1.jpeg",'r').size, color = (0, 0, 255))
+segmented = Image.new('RGB', Image.open("C:/Users/prana/Documents/image_segmentation/handwriting/imeg.jpeg",'r').size, color = (0, 0, 255))
 for i in source_pixels:
     if not i.name == "Source":
         segmented.putpixel(i.name, (255, 0, 0))
-segmented.save("5_segmented.png")
+segmented.save("imeg_segmented.png")
 

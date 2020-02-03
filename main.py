@@ -76,7 +76,10 @@ def add_source_sink(graph, source, sink):
     for edge in source:
         #edge[0] describes the name of the neighboring vertex
         #edge[1] describes the weight, set by default to the maximum, of 100
-        graph.add_directed_edge("Source", edge[0], edge[1])
+        print "SOURCE TO: " + str(edge)
+        print graph.vertices["Source"]
+        print graph.vertices[(1,1)]
+        print graph.add_directed_edge("Source", edge[0], edge[1])
     
     for edge in sink:
         #edge[0] describes the name of the neighboring vertex
@@ -128,13 +131,13 @@ def dfs(graph, resGraph):
             if not verts[graph.index_to_vertex[i]].visited: #i.e. an unvisited neighbor
                 if edges[top[1]][i] - resGraph[top[1]][i] > 0: #see if there's flow left
                     stack.append((edges[i], i)) #if so, push it
-                    print (edges[i], i)
+                    #print (edges[i], i)
                     pathTracker[i] = top[1] #inspiration from here: https://stackoverflow.com/questions/12864004/tracing-and-returning-a-path-in-depth-first-search
                     verts[graph.index_to_vertex[i]].visited = True #mark visited after pushing
                     allVisited.append(verts[graph.index_to_vertex[i]])
     
     for x in allVisited: #clear visited, could've used a visited matrix as that would clear as soon as the method ended execution...
-        print x.name
+        #print x.name
         x.visited = False
     
     path = [] #finally, get the path
@@ -157,9 +160,9 @@ def edmondsKarp(graph, resGraph):
                resGraph - a 2D list representing the residual graph
     '''
     path = dfs(graph, resGraph) #this gets you the path, but its reversed. We handle that in the loop, by switching the order of the vertex indices when finding edge weights (i.e. graph.edges[graph.vertex_indices[path[x+1]]][graph.vertex_indices[path[x]]])
-    print path
+    #print path
     while('Sink' in path): #while an 'augmenting path' exists in the residual graph
-        print "EdmondsKarp" #for testing
+        #print "EdmondsKarp" #for testing
         edges = [(graph.vertex_indices[path[x+1]],graph.vertex_indices[path[x]]) for x in range(len(path)-1)]
         edges.reverse() #this gets all the edges in a simple tuple format, with integers representing the indices they correspond to in the adjacency matrix, and put in sequential order, as the dfs returns a reversed path
         minCap = min([graph.edges[edge[0]][edge[1]] - resGraph[edge[0]][edge[1]] for edge in edges]) #find the minimum residual capacity
@@ -194,17 +197,31 @@ def findCut(graph, resGraph):
                         pixels.append(graph.vertices[graph.index_to_vertex[i]]) #it is part of the source segment!
                         q.append((graph.edges[i], i))#if so, push it
                         graph.vertices[graph.index_to_vertex[i]].visited = True #mark visited after pushing
-    
+    print [str(x) for x in pixels]
     return pixels
+
+# Reversing a list using reversed() - https://www.geeksforgeeks.org/python-reversing-tuple/
+def Reverse(tuples): 
+    new_tup = () 
+    for k in reversed(tuples): 
+        new_tup = new_tup + (k,) 
+    return new_tup 
 
 
 if __name__ == "__main__":
     #get the image, sources, and sinks
-    pre_sources, pre_sinks, filename, dimensions = pickImage()
+    #pre_sources, pre_sinks, filename, dimensions = pickImage()
+
+    filename = "C:\Users\prana\Documents\image_segmentation\image_segmentation\imeg2.png"
+    dimensions = (10,8)
+
+    pre_sources = ["5,8"]
+    pre_sinks = ["3,2", "4,6"]
 
     #converts the coordinates from pickImage() to a format that can be easily converted to a Vertex
-    sources = [((x.split(",")[0], x.split(",")[1]),10000) for x in pre_sources] 
-    sinks = [((x.split(",")[0], x.split(",")[1]),10000) for x in pre_sinks]
+    sources = [((int(x.split(",")[0]), int(x.split(",")[1])),10000) for x in pre_sources] 
+    
+    sinks = [((int(x.split(",")[0]), int(x.split(",")[1])),10000) for x in pre_sinks]
 
     print sources
     print sinks
@@ -216,6 +233,9 @@ if __name__ == "__main__":
     #and the residual graph
     residualGraph = [[0 for x in range(len(graph.edges))] for y in range(len(graph.edges))]
 
+    #graph.print_graph()
+    #print residualGraph
+
     #run Edmonds-Karp
     edmondsKarp(graph, residualGraph)
 
@@ -226,9 +246,9 @@ if __name__ == "__main__":
     segmented = Image.new('RGB', dimensions, color = (0, 0, 255))
     for i in source_pixels:
         if not i.name == "Source":
-            segmented.putpixel(i.name, (255, 0, 0))
+            print Reverse(i.name)
+            segmented.putpixel(Reverse(i.name), (255, 0, 0))
     segmented.save("segmented.png")
-
 
 
     

@@ -1,6 +1,8 @@
 #Authored by: Will Seiple
 #borrowed graph implementation from: https://www.youtube.com/watch?time_continue=396&v=HDUzBEG1GlA&feature=emb_title
 
+from prettytable import PrettyTable
+
 class Vertex:
     def __init__(self, n, data=None, above=None, below=None, left=None, right=None):
         self.above = above
@@ -66,6 +68,10 @@ class Graph:
             Input: u,v - keys in vertices dict (name)
             Output: whether or not the edge could be added 
         '''
+        print u
+        print v
+        print u in self.vertices
+        print v in self.vertices
         if u in self.vertices and v in self.vertices:
             self.edges[self.vertex_indices[u]][self.vertex_indices[v]] = weight
             return True
@@ -74,8 +80,18 @@ class Graph:
     def print_graph(self):
         ''' Prints out a representation of the graph 
         '''
-        for v, i in sorted(self.vertex_indices.items()):
-            print v + ' ',
-            for j in range(len(self.edges)):
-                print self.edges[i][j], 
-            print(' ')   
+        listOfColumns = [self.index_to_vertex[i] for i in range(len(self.edges))]#sorted(self.vertex_indices)
+        listOfColumns.insert(0, "from\\to")
+        table = PrettyTable(listOfColumns)
+        for i in range(len(self.edges)):
+            vertex = self.index_to_vertex[i]
+            row = [self.edges[i][j] for j in range(len(self.edges))]
+            #print (str(v), str(self.index_to_vertex[i]), self.vertex_indices[v])
+            row.insert(0, str(vertex))
+            table.add_row(row)
+        print table
+        #for v, i in sorted(self.vertex_indices.items()):
+        #    print str(v) + ' ',
+        #    for j in range(len(self.edges)):
+        #        print self.edges[i][j], 
+        #    print(' ')   
